@@ -1,9 +1,10 @@
 /// <reference types="cypress" />
 
-describe('example to-do app', () => {
+describe('Sauce demo positive scenarios for login and add to cart', () => {
 
 let userName;
 let userPassword;
+
     before(()=>{
         cy.visit("/");
         cy.fixture('login-credential.json').then((userFixture) => {
@@ -20,4 +21,17 @@ let userPassword;
         cy.get('[data-test="password"]').should("be.visible").clear().type(userPassword);
         cy.get('[data-test="login-button"]').should("be.enabled").click();
     })
+
+    it("should verify to select three item to cart",()=>{
+        cy.get('[data-test^="add-to-cart"]').should("have.length.gt",0)
+            .each(($element,index,list)=>{
+            if(index < 3){
+                cy.log( list.length + "==" + index);
+                cy.wrap($element).click();
+            }
+        }).then((result)=>{
+            cy.get(".shopping_cart_badge").should("have.text","3");
+        })
+    })
+
 })
